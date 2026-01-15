@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "2026-botball-score.itccc.app"
+        }
+      ],
+      "destination": "https://2026-botball-score.itccc.app/$1",
+      "permanent": true
+    }
+  ]
+}

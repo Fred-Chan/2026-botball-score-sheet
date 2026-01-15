@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 Botball 计分表</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 1.5rem;
+            padding: 15px 0;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .total-score {
+            background: #2c3e50;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .total-score h2 {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .total-score .score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .score-breakdown {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .score-breakdown h3 {
+            color: white;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .breakdown-item {
+            background: rgba(255,255,255,0.1);
+            padding: 8px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .breakdown-item .label {
+            font-size: 0.75rem;
+            color: #ecf0f1;
+            flex: 1;
+        }
+
+        .breakdown-item .label small {
+            display: block;
+            font-size: 0.65rem;
+            color: #bdc3c7;
+        }
+
+        .breakdown-item .value {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #3498db;
+            min-width: 50px;
+        }
+
+        .area {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .area-header {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .area-header h3 {
+            font-size: 1rem;
+        }
+
+        .area-header .subtotal {
+            background: rgba(255,255,255,0.3);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .area-content {
+            padding: 15px;
+        }
+
+        .score-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .score-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-name {
+            width: 180px;
+            min-width: 180px;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .item-name small {
+            display: block;
+            color: #888;
+            font-size: 0.75rem;
+        }
+
+        .item-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+        .input-with-buttons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .input-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #3498db;
+            color: white;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .input-btn:hover {
+            background: #2980b9;
+        }
+
+        .input-btn:active {
+            transform: scale(0.95);
+        }
+
+        .item-input input {
+            width: 60px;
+            height: 40px;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .item-input input:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .multiplier {
+            color: #666;
+            font-size: 0.9rem;
+            width: 60px;
+            text-align: right;
+        }
+
+        .item-score {
+            width: 80px;
+            text-align: right;
+            font-weight: bold;
+            color: #3498db;
+            font-size: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .multiplier-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .multiplier-section h4 {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        .multiplier-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+
+        .multiplier-row label {
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        .multiplier-row input {
+            width: 60px;
+            height: 36px;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .multiplier-row input:focus {
+            outline: none;
+            border-color: #f5576c;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn-option {
+            min-width: 45px;
+            height: 36px;
+            padding: 0 12px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-option:hover {
+            border-color: #3498db;
+            background: #ecf0f1;
+        }
+
+        .btn-option.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .btn-option.toggle {
+            min-width: 60px;
+        }
+
+        .btn-option.toggle.active {
+            background: #27ae60;
+            border-color: #27ae60;
+        }
+
+        .area-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #ecf0f1;
+            font-weight: bold;
+            border-top: 2px solid #ddd;
+        }
+
+        .area-total .label {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .area-total .value {
+            font-size: 1.5rem;
+            color: #2c3e50;
+        }
+
+        .area-reset-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .area-reset-btn:hover {
+            background: #c0392b;
+        }
+
+        .area-reset-btn:active {
+            transform: scale(0.98);
+        }
+
+        .reset-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+        }
+
+        .reset-btn:hover {
+            background: #c0392b;
+        }
+
+        .reset-btn:active {
+            transform: scale(0.98);
+        }
+
+        .rules-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .rules-btn:hover {
+            background: #2980b9;
+        }
+
+        .rules-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 道具随机模块 */
+        .random-module {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .random-module h2 {
+            text-align: center;
+            color: #333;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .random-items {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .random-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .random-item h3 {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .random-result {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            align-items: center;
+            min-height: 50px;
+        }
+
+        .color-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            border: 3px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .color-box.red {
+            background: #e74c3c;
+        }
+
+        .color-box.green {
+            background: #27ae60;
+        }
+
+        .color-box.yellow {
+            background: #f39c12;
+        }
+
+        .random-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: #9b59b6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .random-btn:hover {
+            background: #8e44ad;
+        }
+
+        .random-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 计时器模块 */
+        .timer-module {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .timer-module h2 {
+            text-align: center;
+            color: #333;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .timer-display {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .lights-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .light {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #ddd;
+            border: 3px solid #999;
+            transition: all 0.3s;
+        }
+
+        .light.on {
+            background: #27ae60;
+            border-color: #27ae60;
+            box-shadow: 0 0 20px #27ae60;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .timer-btn {
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .timer-btn.start {
+            background: #27ae60;
+            color: white;
+        }
+
+        .timer-btn.start:hover {
+            background: #229954;
+        }
+
+        .timer-btn.reset {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .timer-btn.reset:hover {
+            background: #c0392b;
+        }
+
+        .timer-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        /* 不同区域的颜色 */
+        .area:nth-child(1) .area-header { background: #3498db; }
+        .area:nth-child(2) .area-header { background: #9b59b6; }
+        .area:nth-child(3) .area-header { background: #e74c3c; }
+        .area:nth-child(4) .area-header { background: #1abc9c; }
+        .area:nth-child(5) .area-header { background: #f39c12; }
+        .area:nth-child(6) .area-header { background: #34495e; }
+        .area:nth-child(7) .area-header { background: #16a085; }
+        .area:nth-child(8) .area-header { background: #d35400; }
+
+        @media (max-width: 480px) {
+            .score-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .item-input {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .item-score {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>2026 Botball 计分表</h1>
+
+        <!-- 道具随机模块 -->
+        <div class="random-module">
+            <h2>道具随机 Random Props</h2>
+            <div class="random-items">
+                <div class="random-item">
+                    <h3>仓库上层<br><small>Upper Warehouse</small></h3>
+                    <div class="random-result" id="upperWarehouseRandom">
+                        <div class="color-box">?</div>
+                    </div>
+                </div>
+                <div class="random-item">
+                    <h3>共享仓库<br><small>Shared Warehouse</small></h3>
+                    <div class="random-result" id="sharedWarehouseRandom">
+                        <div class="color-box">?</div>
+                    </div>
+                </div>
+                <div class="random-item">
+                    <h3>小箱堆叠1<br><small>Cube Stack 1</small></h3>
+                    <div class="random-result" id="cubeStack1Random">
+                        <div class="color-box">?</div>
+                        <div class="color-box">?</div>
+                        <div class="color-box">?</div>
+                    </div>
+                </div>
+                <div class="random-item">
+                    <h3>小箱堆叠2<br><small>Cube Stack 2</small></h3>
+                    <div class="random-result" id="cubeStack2Random">
+                        <div class="color-box">?</div>
+                        <div class="color-box">?</div>
+                        <div class="color-box">?</div>
+                    </div>
+                </div>
+            </div>
+            <button class="random-btn" onclick="generateRandom()">随机生成 Randomize</button>
+        </div>
+
+        <!-- 计时器模块 -->
+        <div class="timer-module">
+            <h2>ADDS计时 ADDS Timer</h2>
+            <div class="timer-display" id="timerDisplay">10.0</div>
+            <div class="lights-container">
+                <div class="light" id="light1"></div>
+                <div class="light" id="light2"></div>
+                <div class="light" id="light3"></div>
+                <div class="light" id="light4"></div>
+                <div class="light" id="light5"></div>
+                <div class="light" id="light6"></div>
+                <div class="light" id="light7"></div>
+                <div class="light" id="light8"></div>
+            </div>
+            <div class="timer-controls">
+                <button class="timer-btn start" id="startBtn" onclick="startTimer()">开始 Start</button>
+                <button class="timer-btn reset" onclick="resetTimer()">重置 Reset</button>
+            </div>
+        </div>
+
+        <!-- 下层启动盒 -->
+        <div class="area" id="lowerStartBox">
+            <div class="area-header">
+                <h3>下层启动盒<br><small>Lower Start Box</small></h3>
+                <span class="subtotal" id="lowerStartBoxSubtotal">0</span>
+            </div>
+            <div class="area-content">
+                <div class="score-item">
+                    <div class="item-name">绒球<small>Poms</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="lowerStartBox" data-points="2" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 2</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">箱子<small>Cubes</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="lowerStartBox" data-points="5" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 5</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">托盘上的箱子<small>Cubes on Pallets</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="lowerStartBox" data-points="10" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 10</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">圆筒<small>Drums</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="lowerStartBox" data-points="25" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 25</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">交通锥<small>Traffic Cone</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="lowerStartBox" data-points="50" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 50</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">Botguy</div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="lowerStartBox" data-points="100" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 100</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="multiplier-section">
+                    <h4>乘数 Multipliers</h4>
+                    <div class="multiplier-row">
+                        <label>圆筒 (Drum) × 2</label>
+                        <div class="button-group">
+                            <button class="btn-option toggle active" onclick="toggleButton(this, 'lowerDrum', 0)">否</button>
+                            <button class="btn-option toggle" onclick="toggleButton(this, 'lowerDrum', 1)">是</button>
+                        </div>
+                        <input type="hidden" id="lowerDrum" value="0">
+                    </div>
+                    <div class="multiplier-row">
+                        <label>Botguy × 2</label>
+                        <div class="button-group">
+                            <button class="btn-option toggle active" onclick="toggleButton(this, 'lowerBotguy', 0)">否</button>
+                            <button class="btn-option toggle" onclick="toggleButton(this, 'lowerBotguy', 1)">是</button>
+                        </div>
+                        <input type="hidden" id="lowerBotguy" value="0">
+                    </div>
+                </div>
+            </div>
+            <div class="area-total">
+                <span class="label">小计 Subtotal</span>
+                <span class="value" id="lowerStartBoxTotal">0</span>
+            </div>
+            <button class="area-reset-btn" onclick="resetArea('lowerStartBox')">重置本区 Reset Section</button>
+        </div>
+
+        <!-- 上层启动盒 -->
+        <div class="area" id="upperStartBox">
+            <div class="area-header">
+                <h3>上层启动盒<br><small>Upper Start Box</small></h3>
+                <span class="subtotal" id="upperStartBoxSubtotal">0</span>
+            </div>
+            <div class="area-content">
+                <div class="score-item">
+                    <div class="item-name">绒球<small>Poms</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="upperStartBox" data-points="2" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 2</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">箱子<small>Cubes</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="upperStartBox" data-points="5" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 5</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">托盘上的箱子<small>Cubes on Pallets</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="upperStartBox" data-points="10" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 10</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">圆筒<small>Drums</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="upperStartBox" data-points="25" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 25</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">交通锥<small>Traffic Cone</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="upperStartBox" data-points="100" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 100</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">Botguy</div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="upperStartBox" data-points="200" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 200</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="multiplier-section">
+                    <h4>乘数 Multipliers</h4>
+                    <div class="multiplier-row">
+                        <label>机器人数量 (# of Robots) + 2</label>
+                        <div class="button-group">
+                            <button class="btn-option active" onclick="selectOption(this, 'upperRobots', 0)">0</button>
+                            <button class="btn-option" onclick="selectOption(this, 'upperRobots', 1)">1</button>
+                            <button class="btn-option" onclick="selectOption(this, 'upperRobots', 2)">2</button>
+                        </div>
+                        <input type="hidden" id="upperRobots" value="0">
+                    </div>
+                </div>
+            </div>
+            <div class="area-total">
+                <span class="label">小计 Subtotal</span>
+                <span class="value" id="upperStartBoxTotal">0</span>
+            </div>
+            <button class="area-reset-btn" onclick="resetArea('upperStartBox')">重置本区 Reset Section</button>
+        </div>
+
+        <!-- 仓库地面 -->
+        <div class="area" id="warehouseFloor">
+            <div class="area-header">
+                <h3>仓库地面<br><small>Warehouse Floor</small></h3>
+                <span class="subtotal" id="warehouseFloorSubtotal">0</span>
+            </div>
+            <div class="area-content">
+                <div class="score-item">
+                    <div class="item-name">未分类的绒球<small>Unsorted Poms</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="warehouseFloor" data-points="1" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 1</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">已分类的绒球<small>Sorted Poms</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="warehouseFloor" data-points="5" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 5</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">箱子<small>Cubes</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="warehouseFloor" data-points="1" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 1</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">托盘上的箱子<small>Cubes on Pallets</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="warehouseFloor" data-points="10" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 10</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">圆筒<small>Drums</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="warehouseFloor" data-points="25" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 25</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">Botguy</div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="warehouseFloor" data-points="50" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 50</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="multiplier-section">
+                    <h4>乘数 Multipliers</h4>
+                    <div class="multiplier-row">
+                        <label>已分类绒球区域的数量<br><small># of Sorted Pom Sections</small></label>
+                        <div class="button-group">
+                            <button class="btn-option active" onclick="selectOption(this, 'sortedPomSections', 0)">0</button>
+                            <button class="btn-option" onclick="selectOption(this, 'sortedPomSections', 1)">1</button>
+                            <button class="btn-option" onclick="selectOption(this, 'sortedPomSections', 2)">2</button>
+                            <button class="btn-option" onclick="selectOption(this, 'sortedPomSections', 3)">3</button>
+                            <button class="btn-option" onclick="selectOption(this, 'sortedPomSections', 4)">4</button>
+                            <button class="btn-option" onclick="selectOption(this, 'sortedPomSections', 5)">5</button>
+                            <button class="btn-option" onclick="selectOption(this, 'sortedPomSections', 6)">6</button>
+                        </div>
+                        <input type="hidden" id="sortedPomSections" value="0">
+                    </div>
+                </div>
+            </div>
+            <div class="area-total">
+                <span class="label">小计 Subtotal</span>
+                <span class="value" id="warehouseFloorTotal">0</span>
+            </div>
+            <button class="area-reset-btn" onclick="resetArea('warehouseFloor')">重置本区 Reset Section</button>
+        </div>
+
+        <!-- 内部装卸区 -->
+        <div class="area" id="internalDock">
+            <div class="area-header">
+                <h3>内部装卸区<br><small>Internal Loading Dock</small></h3>
+                <span class="subtotal" id="internalDockSubtotal">0</span>
+            </div>
+            <div class="area-content">
+                <div class="score-item">
+                    <div class="item-name">未分类的箱子<small>Unsorted Cubes</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="internalDock" data-points="10" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 10</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">已分类的箱子<small>Sorted Cubes</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="internalDock" data-points="30" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 30</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="multiplier-section">
+                    <h4>乘数 Multipliers</h4>
+                    <div class="multiplier-row">
+                        <label>载有箱子的托盘数量<br><small># of Pallets with Cubes</small></label>
+                        <div class="button-group">
+                            <button class="btn-option active" onclick="selectOption(this, 'internalPallets', 0)">0</button>
+                            <button class="btn-option" onclick="selectOption(this, 'internalPallets', 1)">1</button>
+                            <button class="btn-option" onclick="selectOption(this, 'internalPallets', 2)">2</button>
+                            <button class="btn-option" onclick="selectOption(this, 'internalPallets', 3)">3</button>
+                            <button class="btn-option" onclick="selectOption(this, 'internalPallets', 4)">4</button>
+                        </div>
+                        <input type="hidden" id="internalPallets" value="0">
+                    </div>
+                </div>
+            </div>
+            <div class="area-total">
+                <span class="label">小计 Subtotal</span>
+                <span class="value" id="internalDockTotal">0</span>
+            </div>
+            <button class="area-reset-btn" onclick="resetArea('internalDock')">重置本区 Reset Section</button>
+        </div>
+
+        <!-- 圆筒存储器 -->
+        <div class="area" id="drumStorage">
+            <div class="area-header">
+                <h3>圆筒存储器<br><small>Drum Storage</small></h3>
+                <span class="subtotal" id="drumStorageSubtotal">0</span>
+            </div>
+            <div class="area-content">
+                <div class="score-item">
+                    <div class="item-name">未分类的2英寸PVC管<small>2" PVC Pipes Unsorted</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="drumStorage" data-points="100" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 100</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">已分类的2英寸PVC管<small>2" PVC Pipes Sorted</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="drumStorage" data-points="200" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 200</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="multiplier-section">
+                    <h4>乘数 Multipliers</h4>
+                    <div class="multiplier-row">
+                        <label>立柱数量<br><small># of Posts</small></label>
+                        <div class="button-group">
+                            <button class="btn-option active" onclick="selectOption(this, 'posts', 0)">0</button>
+                            <button class="btn-option" onclick="selectOption(this, 'posts', 1)">1</button>
+                            <button class="btn-option" onclick="selectOption(this, 'posts', 2)">2</button>
+                        </div>
+                        <input type="hidden" id="posts" value="0">
+                    </div>
+                </div>
+            </div>
+            <div class="area-total">
+                <span class="label">小计 Subtotal</span>
+                <span class="value" id="drumStorageTotal">0</span>
+            </div>
+            <button class="area-reset-btn" onclick="resetArea('drumStorage')">重置本区 Reset Section</button>
+        </div>
+
+        <!-- 包装箱区域 -->
+        <div class="area" id="packagingBin">
+            <div class="area-header">
+                <h3>包装箱区域<br><small>Packaging Bin</small></h3>
+                <span class="subtotal" id="packagingBinSubtotal">0</span>
+            </div>
+            <div class="area-content">
+                <div class="score-item">
+                    <div class="item-name">不匹配的绒球<small>Non-matched Poms</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="packagingBin" data-points="10" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 10</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">匹配的绒球<small>Matched Poms</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="packagingBin" data-points="20" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 20</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">Botguy</div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="packagingBin" data-points="150" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 150</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="multiplier-section">
+                    <h4>乘数 Multipliers</h4>
+                    <div class="multiplier-row">
+                        <label>已分类的篮子 (Sorted Baskets) + 1</label>
+                        <div class="button-group">
+                            <button class="btn-option active" onclick="selectOption(this, 'sortedBaskets', 0)">0</button>
+                            <button class="btn-option" onclick="selectOption(this, 'sortedBaskets', 1)">1</button>
+                            <button class="btn-option" onclick="selectOption(this, 'sortedBaskets', 2)">2</button>
+                        </div>
+                        <input type="hidden" id="sortedBaskets" value="0">
+                    </div>
+                    <div class="multiplier-row">
+                        <label>返回的篮子 (Returned Baskets)</label>
+                        <div class="button-group">
+                            <button class="btn-option active" onclick="selectOption(this, 'returnedBaskets', 0)">0</button>
+                            <button class="btn-option" onclick="selectOption(this, 'returnedBaskets', 1)">1</button>
+                            <button class="btn-option" onclick="selectOption(this, 'returnedBaskets', 2)">2</button>
+                        </div>
+                        <input type="hidden" id="returnedBaskets" value="0">
+                    </div>
+                </div>
+            </div>
+            <div class="area-total">
+                <span class="label">小计 Subtotal</span>
+                <span class="value" id="packagingBinTotal">0</span>
+            </div>
+            <button class="area-reset-btn" onclick="resetArea('packagingBin')">重置本区 Reset Section</button>
+        </div>
+
+        <!-- 仓库上层 -->
+        <div class="area" id="upperWarehouse">
+            <div class="area-header">
+                <h3>仓库上层<br><small>Upper Warehouse</small></h3>
+                <span class="subtotal" id="upperWarehouseSubtotal">0</span>
+            </div>
+            <div class="area-content">
+                <div class="score-item">
+                    <div class="item-name">绒球<small>Poms</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="upperWarehouse" data-points="2" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 2</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">Botguy</div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="upperWarehouse" data-points="200" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 200</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">平台清空<small>Clean Deck</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" max="1" value="0" data-area="upperWarehouse" data-points="100" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 100</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="multiplier-section">
+                    <h4>乘数 Multipliers</h4>
+                    <div class="multiplier-row">
+                        <label>机器人数量 (# of Robots)</label>
+                        <div class="button-group">
+                            <button class="btn-option active" onclick="selectOption(this, 'upperWarehouseRobots', 0)">0</button>
+                            <button class="btn-option" onclick="selectOption(this, 'upperWarehouseRobots', 1)">1</button>
+                            <button class="btn-option" onclick="selectOption(this, 'upperWarehouseRobots', 2)">2</button>
+                        </div>
+                        <input type="hidden" id="upperWarehouseRobots" value="0">
+                    </div>
+                </div>
+            </div>
+            <div class="area-total">
+                <span class="label">小计 Subtotal</span>
+                <span class="value" id="upperWarehouseTotal">0</span>
+            </div>
+            <button class="area-reset-btn" onclick="resetArea('upperWarehouse')">重置本区 Reset Section</button>
+        </div>
+
+        <!-- 外部装卸区 -->
+        <div class="area" id="externalDock">
+            <div class="area-header">
+                <h3>外部装卸区<br><small>External Loading Dock</small></h3>
+                <span class="subtotal" id="externalDockSubtotal">0</span>
+            </div>
+            <div class="area-content">
+                <div class="score-item">
+                    <div class="item-name">未分类的箱子<small>Unsorted Cubes</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="externalDock" data-points="15" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 15</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="score-item">
+                    <div class="item-name">已分类的箱子<small>Sorted Cubes</small></div>
+                    <div class="item-input">
+                        <div class="input-with-buttons">
+                            <button class="input-btn" onclick="decrementValue(this)">-</button>
+                            <input type="number" min="0" value="0" data-area="externalDock" data-points="45" onchange="calculate()" readonly>
+                            <button class="input-btn" onclick="incrementValue(this)">+</button>
+                        </div>
+                        <span class="multiplier">× 45</span>
+                    </div>
+                    <div class="item-score">= 0</div>
+                </div>
+                <div class="multiplier-section">
+                    <h4>乘数 Multipliers</h4>
+                    <div class="multiplier-row">
+                        <label>载有箱子的托盘数量 + 1<br><small># of Pallets with Cubes</small></label>
+                        <div class="button-group">
+                            <button class="btn-option active" onclick="selectOption(this, 'externalPallets', 0)">0</button>
+                            <button class="btn-option" onclick="selectOption(this, 'externalPallets', 1)">1</button>
+                            <button class="btn-option" onclick="selectOption(this, 'externalPallets', 2)">2</button>
+                            <button class="btn-option" onclick="selectOption(this, 'externalPallets', 3)">3</button>
+                            <button class="btn-option" onclick="selectOption(this, 'externalPallets', 4)">4</button>
+                        </div>
+                        <input type="hidden" id="externalPallets" value="0">
+                    </div>
+                </div>
+            </div>
+            <div class="area-total">
+                <span class="label">小计 Subtotal</span>
+                <span class="value" id="externalDockTotal">0</span>
+            </div>
+            <button class="area-reset-btn" onclick="resetArea('externalDock')">重置本区 Reset Section</button>
+        </div>
+
+        <!-- 总分区域移到底部 -->
+        <div class="total-score">
+            <h2>总分 Total Score</h2>
+            <div class="score" id="totalScore">0</div>
+            <div class="score-breakdown">
+                <h3>各区域得分 Score Breakdown</h3>
+                <div class="breakdown-grid">
+                    <div class="breakdown-item">
+                        <span class="label">下层启动盒<br><small>Lower Start Box</small></span>
+                        <span class="value" id="breakdown-lower">0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="label">上层启动盒<br><small>Upper Start Box</small></span>
+                        <span class="value" id="breakdown-upper">0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="label">仓库地面<br><small>Warehouse Floor</small></span>
+                        <span class="value" id="breakdown-warehouse">0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="label">内部装卸区<br><small>Internal Dock</small></span>
+                        <span class="value" id="breakdown-internal">0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="label">圆筒存储器<br><small>Drum Storage</small></span>
+                        <span class="value" id="breakdown-drum">0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="label">包装箱区域<br><small>Packaging Bin</small></span>
+                        <span class="value" id="breakdown-packaging">0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="label">仓库上层<br><small>Upper Warehouse</small></span>
+                        <span class="value" id="breakdown-upperwarehouse">0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="label">外部装卸区<br><small>External Dock</small></span>
+                        <span class="value" id="breakdown-external">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="reset-btn" onclick="resetAll()">重置所有 Reset All</button>
+        <a href="https://www.yuque.com/botball/rules/2026_game_review" target="_blank" class="rules-btn">查看规则 View Rules</a>
+    </div>
+
+    <script>
+        // 道具随机功能
+        function generateRandom() {
+            // 仓库上层和共享仓库：一个红一个绿（互补）
+            const upperWarehouseColors = ['red', 'green'];
+            const upperColor = upperWarehouseColors[Math.floor(Math.random() * 2)];
+            const sharedColor = upperColor === 'red' ? 'green' : 'red'; // 相反颜色
+
+            const upperWarehouse = document.getElementById('upperWarehouseRandom');
+            upperWarehouse.innerHTML = `<div class="color-box ${upperColor}">${upperColor === 'red' ? '红' : '绿'}</div>`;
+
+            const sharedWarehouse = document.getElementById('sharedWarehouseRandom');
+            sharedWarehouse.innerHTML = `<div class="color-box ${sharedColor}">${sharedColor === 'red' ? '红' : '绿'}</div>`;
+
+            // 小箱堆叠1：黄红绿随机顺序（独立随机）
+            const colors = ['yellow', 'red', 'green'];
+            const colorNames = { yellow: '黄', red: '红', green: '绿' };
+
+            // Fisher-Yates 洗牌算法确保真正的随机
+            const stack1 = [...colors];
+            for (let i = stack1.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [stack1[i], stack1[j]] = [stack1[j], stack1[i]];
+            }
+            const cubeStack1 = document.getElementById('cubeStack1Random');
+            cubeStack1.innerHTML = stack1.map(color =>
+                `<div class="color-box ${color}">${colorNames[color]}</div>`
+            ).join('');
+
+            // 小箱堆叠2：黄红绿随机顺序（独立随机）
+            const stack2 = [...colors];
+            for (let i = stack2.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [stack2[i], stack2[j]] = [stack2[j], stack2[i]];
+            }
+            const cubeStack2 = document.getElementById('cubeStack2Random');
+            cubeStack2.innerHTML = stack2.map(color =>
+                `<div class="color-box ${color}">${colorNames[color]}</div>`
+            ).join('');
+        }
+
+        // 计时器相关变量
+        let timerInterval = null;
+        let currentTime = 10.0;
+        let isRunning = false;
+        let currentLight = 0;
+        let phase = 'initial'; // 'initial' or 'lights'
+
+        function startTimer() {
+            if (isRunning) return;
+
+            isRunning = true;
+            document.getElementById('startBtn').disabled = true;
+
+            timerInterval = setInterval(() => {
+                if (phase === 'initial') {
+                    // 初始10秒倒计时
+                    currentTime -= 0.1;
+                    if (currentTime <= 0) {
+                        currentTime = 7.0;
+                        phase = 'lights';
+                        currentLight = 1;
+                        document.getElementById('light1').classList.add('on');
+                    }
+                    document.getElementById('timerDisplay').textContent = currentTime.toFixed(1);
+                } else {
+                    // 每7秒点亮下一盏灯
+                    currentTime -= 0.1;
+                    if (currentTime <= 0 && currentLight < 8) {
+                        currentTime = 7.0;
+                        currentLight++;
+                        if (currentLight <= 8) {
+                            document.getElementById('light' + currentLight).classList.add('on');
+                        }
+                        if (currentLight >= 8) {
+                            // 所有灯都亮了，停止计时
+                            clearInterval(timerInterval);
+                            isRunning = false;
+                            document.getElementById('startBtn').disabled = false;
+                            document.getElementById('timerDisplay').textContent = '完成';
+                        }
+                    }
+                    if (isRunning) {
+                        document.getElementById('timerDisplay').textContent = currentTime.toFixed(1);
+                    }
+                }
+            }, 100);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            currentTime = 10.0;
+            currentLight = 0;
+            phase = 'initial';
+
+            document.getElementById('timerDisplay').textContent = '10.0';
+            document.getElementById('startBtn').disabled = false;
+
+            // 熄灭所有灯
+            for (let i = 1; i <= 8; i++) {
+                document.getElementById('light' + i).classList.remove('on');
+            }
+        }
+
+        // 加减按钮功能
+        function incrementValue(button) {
+            const input = button.parentElement.querySelector('input');
+            const max = input.getAttribute('max');
+            const currentValue = parseInt(input.value) || 0;
+            if (!max || currentValue < parseInt(max)) {
+                input.value = currentValue + 1;
+                calculate();
+            }
+        }
+
+        function decrementValue(button) {
+            const input = button.parentElement.querySelector('input');
+            const min = input.getAttribute('min') || 0;
+            const currentValue = parseInt(input.value) || 0;
+            if (currentValue > parseInt(min)) {
+                input.value = currentValue - 1;
+                calculate();
+            }
+        }
+
+        // 按钮选项功能
+        function selectOption(button, inputId, value) {
+            // 移除同组按钮的active类
+            const siblings = button.parentElement.querySelectorAll('.btn-option');
+            siblings.forEach(btn => btn.classList.remove('active'));
+            // 添加active类到当前按钮
+            button.classList.add('active');
+            // 更新隐藏输入的值
+            document.getElementById(inputId).value = value;
+            calculate();
+        }
+
+        // 切换按钮功能（是/否）
+        function toggleButton(button, inputId, value) {
+            // 移除同组按钮的active类
+            const siblings = button.parentElement.querySelectorAll('.btn-option');
+            siblings.forEach(btn => btn.classList.remove('active'));
+            // 添加active类到当前按钮
+            button.classList.add('active');
+            // 更新隐藏输入的值
+            document.getElementById(inputId).value = value;
+            calculate();
+        }
+
+        function calculate() {
+            let totalScore = 0;
+
+            // 下层启动盒
+            const lowerItems = document.querySelectorAll('[data-area="lowerStartBox"]');
+            let lowerBase = 0;
+            lowerItems.forEach(input => {
+                const qty = parseInt(input.value) || 0;
+                const points = parseInt(input.dataset.points);
+                const score = qty * points;
+                input.closest('.score-item').querySelector('.item-score').textContent = '= ' + score;
+                lowerBase += score;
+            });
+            const lowerDrum = parseInt(document.getElementById('lowerDrum').value) || 0;
+            const lowerBotguy = parseInt(document.getElementById('lowerBotguy').value) || 0;
+            const lowerMultiplier = (lowerDrum > 0 ? 2 : 1) * (lowerBotguy > 0 ? 2 : 1);
+            const lowerTotal = lowerBase * lowerMultiplier;
+            document.getElementById('lowerStartBoxSubtotal').textContent = lowerTotal;
+            document.getElementById('lowerStartBoxTotal').textContent = lowerTotal;
+            totalScore += lowerTotal;
+
+            // 上层启动盒 - 修复计分逻辑
+            const upperItems = document.querySelectorAll('[data-area="upperStartBox"]');
+            let upperBase = 0;
+            upperItems.forEach(input => {
+                const qty = parseInt(input.value) || 0;
+                const points = parseInt(input.dataset.points);
+                const score = qty * points;
+                input.closest('.score-item').querySelector('.item-score').textContent = '= ' + score;
+                upperBase += score;
+            });
+            const upperRobots = parseInt(document.getElementById('upperRobots').value) || 0;
+            let upperMultiplier;
+            if (upperRobots === 0) {
+                upperMultiplier = 1; // 0的状态下不会激活+2的条件
+            } else {
+                upperMultiplier = upperRobots + 2; // 为1时按1+2=3倍，为2时按2+2=4倍
+            }
+            const upperTotal = upperBase * upperMultiplier;
+            document.getElementById('upperStartBoxSubtotal').textContent = upperTotal;
+            document.getElementById('upperStartBoxTotal').textContent = upperTotal;
+            totalScore += upperTotal;
+
+            // 仓库地面
+            const warehouseItems = document.querySelectorAll('[data-area="warehouseFloor"]');
+            let warehouseBase = 0;
+            warehouseItems.forEach(input => {
+                const qty = parseInt(input.value) || 0;
+                const points = parseInt(input.dataset.points);
+                const score = qty * points;
+                input.closest('.score-item').querySelector('.item-score').textContent = '= ' + score;
+                warehouseBase += score;
+            });
+            const sortedPomSections = parseInt(document.getElementById('sortedPomSections').value) || 0;
+            const warehouseMultiplier = sortedPomSections > 0 ? sortedPomSections : 1;
+            const warehouseTotal = warehouseBase * warehouseMultiplier;
+            document.getElementById('warehouseFloorSubtotal').textContent = warehouseTotal;
+            document.getElementById('warehouseFloorTotal').textContent = warehouseTotal;
+            totalScore += warehouseTotal;
+
+            // 内部装卸区
+            const internalItems = document.querySelectorAll('[data-area="internalDock"]');
+            let internalBase = 0;
+            internalItems.forEach(input => {
+                const qty = parseInt(input.value) || 0;
+                const points = parseInt(input.dataset.points);
+                const score = qty * points;
+                input.closest('.score-item').querySelector('.item-score').textContent = '= ' + score;
+                internalBase += score;
+            });
+            const internalPallets = parseInt(document.getElementById('internalPallets').value) || 0;
+            const internalMultiplier = internalPallets > 0 ? internalPallets : 1;
+            const internalTotal = internalBase * internalMultiplier;
+            document.getElementById('internalDockSubtotal').textContent = internalTotal;
+            document.getElementById('internalDockTotal').textContent = internalTotal;
+            totalScore += internalTotal;
+
+            // 圆筒存储器
+            const drumItems = document.querySelectorAll('[data-area="drumStorage"]');
+            let drumBase = 0;
+            drumItems.forEach(input => {
+                const qty = parseInt(input.value) || 0;
+                const points = parseInt(input.dataset.points);
+                const score = qty * points;
+                input.closest('.score-item').querySelector('.item-score').textContent = '= ' + score;
+                drumBase += score;
+            });
+            const posts = parseInt(document.getElementById('posts').value) || 0;
+            const drumMultiplier = posts > 0 ? posts : 1;
+            const drumTotal = drumBase * drumMultiplier;
+            document.getElementById('drumStorageSubtotal').textContent = drumTotal;
+            document.getElementById('drumStorageTotal').textContent = drumTotal;
+            totalScore += drumTotal;
+
+            // 包装箱区域
+            const packagingItems = document.querySelectorAll('[data-area="packagingBin"]');
+            let packagingBase = 0;
+            packagingItems.forEach(input => {
+                const qty = parseInt(input.value) || 0;
+                const points = parseInt(input.dataset.points);
+                const score = qty * points;
+                input.closest('.score-item').querySelector('.item-score').textContent = '= ' + score;
+                packagingBase += score;
+            });
+            const sortedBaskets = parseInt(document.getElementById('sortedBaskets').value) || 0;
+            const returnedBaskets = parseInt(document.getElementById('returnedBaskets').value) || 0;
+            const packagingMultiplier = (sortedBaskets > 0 ? sortedBaskets + 1 : 1) * (returnedBaskets > 0 ? returnedBaskets : 1);
+            const packagingTotal = packagingBase * packagingMultiplier;
+            document.getElementById('packagingBinSubtotal').textContent = packagingTotal;
+            document.getElementById('packagingBinTotal').textContent = packagingTotal;
+            totalScore += packagingTotal;
+
+            // 仓库上层
+            const upperWarehouseItems = document.querySelectorAll('[data-area="upperWarehouse"]');
+            let upperWarehouseBase = 0;
+            upperWarehouseItems.forEach(input => {
+                const qty = parseInt(input.value) || 0;
+                const points = parseInt(input.dataset.points);
+                const score = qty * points;
+                input.closest('.score-item').querySelector('.item-score').textContent = '= ' + score;
+                upperWarehouseBase += score;
+            });
+            const upperWarehouseRobots = parseInt(document.getElementById('upperWarehouseRobots').value) || 0;
+            const upperWarehouseMultiplier = upperWarehouseRobots > 0 ? upperWarehouseRobots : 1;
+            const upperWarehouseTotal = upperWarehouseBase * upperWarehouseMultiplier;
+            document.getElementById('upperWarehouseSubtotal').textContent = upperWarehouseTotal;
+            document.getElementById('upperWarehouseTotal').textContent = upperWarehouseTotal;
+            totalScore += upperWarehouseTotal;
+
+            // 外部装卸区
+            const externalItems = document.querySelectorAll('[data-area="externalDock"]');
+            let externalBase = 0;
+            externalItems.forEach(input => {
+                const qty = parseInt(input.value) || 0;
+                const points = parseInt(input.dataset.points);
+                const score = qty * points;
+                input.closest('.score-item').querySelector('.item-score').textContent = '= ' + score;
+                externalBase += score;
+            });
+            const externalPallets = parseInt(document.getElementById('externalPallets').value) || 0;
+            const externalMultiplier = externalPallets > 0 ? externalPallets + 1 : 1;
+            const externalTotal = externalBase * externalMultiplier;
+            document.getElementById('externalDockSubtotal').textContent = externalTotal;
+            document.getElementById('externalDockTotal').textContent = externalTotal;
+            totalScore += externalTotal;
+
+            // 更新总分
+            document.getElementById('totalScore').textContent = totalScore;
+
+            // 更新各区域得分明细
+            document.getElementById('breakdown-lower').textContent = lowerTotal;
+            document.getElementById('breakdown-upper').textContent = upperTotal;
+            document.getElementById('breakdown-warehouse').textContent = warehouseTotal;
+            document.getElementById('breakdown-internal').textContent = internalTotal;
+            document.getElementById('breakdown-drum').textContent = drumTotal;
+            document.getElementById('breakdown-packaging').textContent = packagingTotal;
+            document.getElementById('breakdown-upperwarehouse').textContent = upperWarehouseTotal;
+            document.getElementById('breakdown-external').textContent = externalTotal;
+        }
+
+        // 重置单个区域
+        function resetArea(areaId) {
+            if (confirm('确定要重置本区数据吗？\nAre you sure you want to reset this section?')) {
+                // 重置该区域的所有数值输入
+                const areaElement = document.getElementById(areaId);
+                areaElement.querySelectorAll('input[type="number"]').forEach(input => {
+                    input.value = 0;
+                });
+
+                // 重置该区域的所有隐藏输入
+                areaElement.querySelectorAll('input[type="hidden"]').forEach(input => {
+                    input.value = 0;
+                });
+
+                // 重置该区域的所有按钮状态
+                areaElement.querySelectorAll('.btn-option').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+
+                // 激活该区域第一个按钮（0或否选项）
+                areaElement.querySelectorAll('.button-group').forEach(group => {
+                    const firstBtn = group.querySelector('.btn-option');
+                    if (firstBtn) {
+                        firstBtn.classList.add('active');
+                    }
+                });
+
+                calculate();
+            }
+        }
+
+        function resetAll() {
+            if (confirm('确定要重置所有数据吗？\nAre you sure you want to reset all data?')) {
+                // 重置所有数值输入
+                document.querySelectorAll('input[type="number"]').forEach(input => {
+                    input.value = 0;
+                });
+
+                // 重置所有隐藏输入
+                document.querySelectorAll('input[type="hidden"]').forEach(input => {
+                    input.value = 0;
+                });
+
+                // 重置所有按钮状态
+                document.querySelectorAll('.btn-option').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+
+                // 激活所有第一个按钮（0或否选项）
+                document.querySelectorAll('.button-group').forEach(group => {
+                    const firstBtn = group.querySelector('.btn-option');
+                    if (firstBtn) {
+                        firstBtn.classList.add('active');
+                    }
+                });
+
+                calculate();
+            }
+        }
+
+        // 初始化计算
+        calculate();
+    </script>
+</body>
+</html>
