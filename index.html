@@ -696,6 +696,73 @@
             display: none;
         }
 
+        /* 场地选择器内联版本 (在总分区域内) */
+        .field-selector-inline {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .field-selector-inline h3 {
+            color: white;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        /* 总分组合显示 */
+        .total-combined {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .total-combined h3 {
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .total-combined .score {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #3498db;
+            text-align: center;
+        }
+
+        /* 滚动到底部的悬浮按钮 */
+        .scroll-to-bottom-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #3498db;
+            color: white;
+            border: none;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scroll-to-bottom-btn:hover {
+            background: #2980b9;
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+        }
+
+        .scroll-to-bottom-btn:active {
+            transform: scale(0.95);
+        }
+
         /* 可点击的breakdown项 */
         .breakdown-item {
             cursor: pointer;
@@ -781,15 +848,6 @@
             <div class="mode-buttons">
                 <button class="mode-btn active" onclick="switchMode('challenge')">积分挑战<br><small>Seeding</small></button>
                 <button class="mode-btn" onclick="switchMode('duel')">巅峰对决<br><small>Double Elimination</small></button>
-            </div>
-        </div>
-
-        <!-- 场地选择器 (积分挑战模式) -->
-        <div class="field-selector" id="fieldSelector">
-            <h3>当前场地 Current Field</h3>
-            <div class="field-buttons">
-                <button class="field-btn active" onclick="switchField('A')">A场地<br><small>Field A</small></button>
-                <button class="field-btn" onclick="switchField('B')">B场地<br><small>Field B</small></button>
             </div>
         </div>
 
@@ -1453,9 +1511,31 @@
         <div class="total-score">
             <h2 id="totalScoreTitle">总分 Total Score</h2>
 
-            <!-- 积分挑战模式：显示合计 -->
+            <!-- 场地切换器 -->
+            <div class="field-selector-inline">
+                <h3>当前编辑场地 Current Field</h3>
+                <div class="field-buttons">
+                    <button class="field-btn active" onclick="switchField('A')">A场地<br><small>Field A</small></button>
+                    <button class="field-btn" onclick="switchField('B')">B场地<br><small>Field B</small></button>
+                </div>
+            </div>
+
+            <!-- 积分挑战模式：显示A、B和总分 -->
             <div id="challengeScore">
-                <div class="score" id="totalScore">0</div>
+                <div class="duel-scores">
+                    <div class="duel-field">
+                        <h3>A场地<br><small>Field A</small></h3>
+                        <div class="score" id="challengeScoreA">0</div>
+                    </div>
+                    <div class="duel-field">
+                        <h3>B场地<br><small>Field B</small></h3>
+                        <div class="score" id="challengeScoreB">0</div>
+                    </div>
+                </div>
+                <div class="total-combined">
+                    <h3>总分 Total</h3>
+                    <div class="score" id="totalScore">0</div>
+                </div>
             </div>
 
             <!-- 巅峰对决模式：显示两个场地的分数 -->
@@ -1513,6 +1593,11 @@
 
         <button class="reset-btn" onclick="resetAll()">重置所有 Reset All</button>
         <a href="https://www.yuque.com/botball/rules/2026_game_review" target="_blank" class="rules-btn">查看规则 View Rules</a>
+
+        <!-- 滚动到底部的悬浮按钮 -->
+        <button class="scroll-to-bottom-btn" onclick="scrollToBottom()" title="滚动到底部 Scroll to Bottom">
+            ↓
+        </button>
     </div>
 
     <script>
@@ -1536,21 +1621,18 @@
             });
             event.target.closest('.mode-btn').classList.add('active');
 
-            // 显示/隐藏场地选择器
-            const fieldSelector = document.getElementById('fieldSelector');
+            // 显示/隐藏相应的分数显示
             const challengeScore = document.getElementById('challengeScore');
             const duelScore = document.getElementById('duelScore');
 
             if (mode === 'challenge') {
-                fieldSelector.classList.remove('hidden');
                 challengeScore.style.display = 'block';
                 duelScore.style.display = 'none';
                 document.getElementById('totalScoreTitle').textContent = '总分 Total Score (A场地 + B场地)';
             } else {
-                fieldSelector.classList.add('hidden');
                 challengeScore.style.display = 'none';
                 duelScore.style.display = 'block';
-                document.getElementById('totalScoreTitle').textContent = '巅峰对决 Peak Duel';
+                document.getElementById('totalScoreTitle').textContent = '巅峰对决 Double Elimination';
             }
 
             calculate();
@@ -1961,7 +2043,7 @@
 
             // 根据模式更新总分显示
             if (currentMode === 'challenge') {
-                // 积分挑战模式：计算A场地 + B场地
+                // 积分挑战模式：同时显示A、B场地分数和总分
                 fieldData[currentField] = {
                     total: totalScore,
                     breakdown: {
@@ -1980,6 +2062,8 @@
                 const scoreB = (fieldData.B && fieldData.B.total) || 0;
                 const combinedScore = scoreA + scoreB;
 
+                document.getElementById('challengeScoreA').textContent = scoreA;
+                document.getElementById('challengeScoreB').textContent = scoreB;
                 document.getElementById('totalScore').textContent = combinedScore;
             } else {
                 // 巅峰对决模式：显示两个场地的分数并标注胜者
@@ -2076,6 +2160,14 @@
 
                 calculate();
             }
+        }
+
+        // 滚动到底部功能
+        function scrollToBottom() {
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
         }
 
         // 初始化计算
