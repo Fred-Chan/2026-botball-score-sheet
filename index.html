@@ -575,6 +575,174 @@
             cursor: not-allowed;
         }
 
+        /* 模式选择器 */
+        .mode-selector {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .mode-selector h2 {
+            text-align: center;
+            color: #333;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .mode-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .mode-btn {
+            flex: 1;
+            max-width: 200px;
+            padding: 15px;
+            border: 3px solid #ddd;
+            background: white;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .mode-btn small {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: normal;
+            margin-top: 5px;
+            color: #666;
+        }
+
+        .mode-btn:hover {
+            border-color: #3498db;
+            background: #ecf0f1;
+        }
+
+        .mode-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .mode-btn.active small {
+            color: #ecf0f1;
+        }
+
+        /* 场地选择器 */
+        .field-selector {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .field-selector h3 {
+            text-align: center;
+            color: #333;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .field-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .field-btn {
+            flex: 1;
+            max-width: 150px;
+            padding: 12px;
+            border: 3px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .field-btn small {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: normal;
+            margin-top: 3px;
+            color: #666;
+        }
+
+        .field-btn:hover {
+            border-color: #27ae60;
+            background: #ecf0f1;
+        }
+
+        .field-btn.active {
+            background: #27ae60;
+            color: white;
+            border-color: #27ae60;
+        }
+
+        .field-btn.active small {
+            color: #ecf0f1;
+        }
+
+        /* 场地选择器在巅峰对决模式下隐藏 */
+        .field-selector.hidden {
+            display: none;
+        }
+
+        /* 可点击的breakdown项 */
+        .breakdown-item {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .breakdown-item:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* 巅峰对决模式的额外样式 */
+        .duel-scores {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .duel-field {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .duel-field h3 {
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .duel-field .score {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3498db;
+            text-align: center;
+        }
+
+        .duel-field.winner {
+            background: rgba(39, 174, 96, 0.3);
+            border: 2px solid #27ae60;
+        }
+
+        .duel-field.winner h3::after {
+            content: " 🏆";
+        }
+
         /* 不同区域的颜色 */
         .area:nth-child(1) .area-header { background: #3498db; }
         .area:nth-child(2) .area-header { background: #9b59b6; }
@@ -606,6 +774,24 @@
 <body>
     <div class="container">
         <h1>2026 Botball 计分表</h1>
+
+        <!-- 模式选择 -->
+        <div class="mode-selector">
+            <h2>比赛模式 Competition Mode</h2>
+            <div class="mode-buttons">
+                <button class="mode-btn active" onclick="switchMode('challenge')">积分挑战<br><small>Score Challenge</small></button>
+                <button class="mode-btn" onclick="switchMode('duel')">巅峰对决<br><small>Peak Duel</small></button>
+            </div>
+        </div>
+
+        <!-- 场地选择器 (积分挑战模式) -->
+        <div class="field-selector" id="fieldSelector">
+            <h3>当前场地 Current Field</h3>
+            <div class="field-buttons">
+                <button class="field-btn active" onclick="switchField('A')">A场地<br><small>Field A</small></button>
+                <button class="field-btn" onclick="switchField('B')">B场地<br><small>Field B</small></button>
+            </div>
+        </div>
 
         <!-- 道具随机模块 -->
         <div class="random-module">
@@ -1265,40 +1451,59 @@
 
         <!-- 总分区域移到底部 -->
         <div class="total-score">
-            <h2>总分 Total Score</h2>
-            <div class="score" id="totalScore">0</div>
+            <h2 id="totalScoreTitle">总分 Total Score</h2>
+
+            <!-- 积分挑战模式：显示合计 -->
+            <div id="challengeScore">
+                <div class="score" id="totalScore">0</div>
+            </div>
+
+            <!-- 巅峰对决模式：显示两个场地的分数 -->
+            <div id="duelScore" style="display: none;">
+                <div class="duel-scores">
+                    <div class="duel-field" id="duelFieldA">
+                        <h3>A场地<br><small>Field A</small></h3>
+                        <div class="score" id="duelScoreA">0</div>
+                    </div>
+                    <div class="duel-field" id="duelFieldB">
+                        <h3>B场地<br><small>Field B</small></h3>
+                        <div class="score" id="duelScoreB">0</div>
+                    </div>
+                </div>
+            </div>
+
             <div class="score-breakdown">
                 <h3>各区域得分 Score Breakdown</h3>
                 <div class="breakdown-grid">
-                    <div class="breakdown-item">
+                    <div class="breakdown-item" onclick="scrollToArea('lowerStartBox')">
                         <span class="label">下层启动盒<br><small>Lower Start Box</small></span>
                         <span class="value" id="breakdown-lower">0</span>
                     </div>
-                    <div class="breakdown-item">
+                    <div class="breakdown-item" onclick="scrollToArea('upperStartBox')">
                         <span class="label">上层启动盒<br><small>Upper Start Box</small></span>
                         <span class="value" id="breakdown-upper">0</span>
                     </div>
-                    <div class="breakdown-item">
+                    <div class="breakdown-item" onclick="scrollToArea('warehouseFloor')">
                         <span class="label">仓库地面<br><small>Warehouse Floor</small></span>
                         <span class="value" id="breakdown-warehouse">0</span>
                     </div>
-                    <div class="breakdown-item">
+                    <div class="breakdown-item" onclick="scrollToArea('internalDock')">
                         <span class="label">内部装卸区<br><small>Internal Dock</small></span>
                         <span class="value" id="breakdown-internal">0</span>
                     </div>
-                    <div class="breakdown-item">
+                    <div class="breakdown-item" onclick="scrollToArea('drumStorage')">
                         <span class="label">圆筒存储器<br><small>Drum Storage</small></span>
                         <span class="value" id="breakdown-drum">0</span>
                     </div>
-                    <div class="breakdown-item">
+                    <div class="breakdown-item" onclick="scrollToArea('packagingBin')">
                         <span class="label">包装箱区域<br><small>Packaging Bin</small></span>
                         <span class="value" id="breakdown-packaging">0</span>
                     </div>
-                    <div class="breakdown-item">
+                    <div class="breakdown-item" onclick="scrollToArea('upperWarehouse')">
                         <span class="label">仓库上层<br><small>Upper Warehouse</small></span>
                         <span class="value" id="breakdown-upperwarehouse">0</span>
                     </div>
-                    <div class="breakdown-item">
+                    <div class="breakdown-item" onclick="scrollToArea('externalDock')">
                         <span class="label">外部装卸区<br><small>External Dock</small></span>
                         <span class="value" id="breakdown-external">0</span>
                     </div>
@@ -1311,6 +1516,141 @@
     </div>
 
     <script>
+        // 全局状态变量
+        let currentMode = 'challenge'; // 'challenge' 或 'duel'
+        let currentField = 'A'; // 当前编辑的场地 'A' 或 'B'
+
+        // 存储两个场地的数据
+        let fieldData = {
+            A: {},
+            B: {}
+        };
+
+        // 模式切换函数
+        function switchMode(mode) {
+            currentMode = mode;
+
+            // 更新按钮状态
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.mode-btn').classList.add('active');
+
+            // 显示/隐藏场地选择器
+            const fieldSelector = document.getElementById('fieldSelector');
+            const challengeScore = document.getElementById('challengeScore');
+            const duelScore = document.getElementById('duelScore');
+
+            if (mode === 'challenge') {
+                fieldSelector.classList.remove('hidden');
+                challengeScore.style.display = 'block';
+                duelScore.style.display = 'none';
+                document.getElementById('totalScoreTitle').textContent = '总分 Total Score (A场地 + B场地)';
+            } else {
+                fieldSelector.classList.add('hidden');
+                challengeScore.style.display = 'none';
+                duelScore.style.display = 'block';
+                document.getElementById('totalScoreTitle').textContent = '巅峰对决 Peak Duel';
+            }
+
+            calculate();
+        }
+
+        // 场地切换函数
+        function switchField(field) {
+            // 保存当前场地数据
+            saveCurrentFieldData();
+
+            currentField = field;
+
+            // 更新按钮状态
+            document.querySelectorAll('.field-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.field-btn').classList.add('active');
+
+            // 加载新场地数据
+            loadFieldData(field);
+
+            calculate();
+        }
+
+        // 保存当前场地数据
+        function saveCurrentFieldData() {
+            const data = {};
+
+            // 保存所有数值输入
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                const area = input.dataset.area;
+                const points = input.dataset.points;
+                const key = `${area}_${points}`;
+                data[key] = input.value;
+            });
+
+            // 保存所有隐藏输入（乘数）
+            document.querySelectorAll('input[type="hidden"]').forEach(input => {
+                data[input.id] = input.value;
+            });
+
+            fieldData[currentField] = data;
+        }
+
+        // 加载场地数据
+        function loadFieldData(field) {
+            const data = fieldData[field] || {};
+
+            // 如果该场地没有数据，重置为0
+            if (Object.keys(data).length === 0) {
+                resetAll(true); // 静默重置，不弹确认框
+                return;
+            }
+
+            // 加载数值输入
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                const area = input.dataset.area;
+                const points = input.dataset.points;
+                const key = `${area}_${points}`;
+                input.value = data[key] || 0;
+            });
+
+            // 加载隐藏输入（乘数）
+            document.querySelectorAll('input[type="hidden"]').forEach(input => {
+                input.value = data[input.id] || 0;
+            });
+
+            // 更新所有按钮状态
+            document.querySelectorAll('input[type="hidden"]').forEach(input => {
+                const value = input.value;
+                const buttonsContainer = input.previousElementSibling;
+                if (buttonsContainer && buttonsContainer.classList.contains('button-group')) {
+                    buttonsContainer.querySelectorAll('.btn-option').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    const activeBtn = Array.from(buttonsContainer.querySelectorAll('.btn-option')).find(btn => {
+                        const onclick = btn.getAttribute('onclick');
+                        return onclick && onclick.includes(`, ${value})`);
+                    });
+                    if (activeBtn) {
+                        activeBtn.classList.add('active');
+                    }
+                }
+            });
+        }
+
+        // 跳转到指定区域
+        function scrollToArea(areaId) {
+            const element = document.getElementById(areaId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // 添加高亮效果
+                element.style.transition = 'box-shadow 0.3s';
+                element.style.boxShadow = '0 0 20px rgba(52, 152, 219, 0.8)';
+                setTimeout(() => {
+                    element.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+                }, 1000);
+            }
+        }
+
         // 道具随机功能
         function generateRandom() {
             // 仓库上层和共享仓库：一个红一个绿（互补）
@@ -1606,8 +1946,8 @@
             document.getElementById('externalDockTotal').textContent = externalTotal;
             totalScore += externalTotal;
 
-            // 更新总分
-            document.getElementById('totalScore').textContent = totalScore;
+            // 保存当前场地数据
+            saveCurrentFieldData();
 
             // 更新各区域得分明细
             document.getElementById('breakdown-lower').textContent = lowerTotal;
@@ -1618,6 +1958,64 @@
             document.getElementById('breakdown-packaging').textContent = packagingTotal;
             document.getElementById('breakdown-upperwarehouse').textContent = upperWarehouseTotal;
             document.getElementById('breakdown-external').textContent = externalTotal;
+
+            // 根据模式更新总分显示
+            if (currentMode === 'challenge') {
+                // 积分挑战模式：计算A场地 + B场地
+                fieldData[currentField] = {
+                    total: totalScore,
+                    breakdown: {
+                        lower: lowerTotal,
+                        upper: upperTotal,
+                        warehouse: warehouseTotal,
+                        internal: internalTotal,
+                        drum: drumTotal,
+                        packaging: packagingTotal,
+                        upperwarehouse: upperWarehouseTotal,
+                        external: externalTotal
+                    }
+                };
+
+                const scoreA = (fieldData.A && fieldData.A.total) || 0;
+                const scoreB = (fieldData.B && fieldData.B.total) || 0;
+                const combinedScore = scoreA + scoreB;
+
+                document.getElementById('totalScore').textContent = combinedScore;
+            } else {
+                // 巅峰对决模式：显示两个场地的分数并标注胜者
+                fieldData[currentField] = {
+                    total: totalScore,
+                    breakdown: {
+                        lower: lowerTotal,
+                        upper: upperTotal,
+                        warehouse: warehouseTotal,
+                        internal: internalTotal,
+                        drum: drumTotal,
+                        packaging: packagingTotal,
+                        upperwarehouse: upperWarehouseTotal,
+                        external: externalTotal
+                    }
+                };
+
+                const scoreA = (fieldData.A && fieldData.A.total) || 0;
+                const scoreB = (fieldData.B && fieldData.B.total) || 0;
+
+                document.getElementById('duelScoreA').textContent = scoreA;
+                document.getElementById('duelScoreB').textContent = scoreB;
+
+                // 标注胜者
+                const fieldAElement = document.getElementById('duelFieldA');
+                const fieldBElement = document.getElementById('duelFieldB');
+
+                fieldAElement.classList.remove('winner');
+                fieldBElement.classList.remove('winner');
+
+                if (scoreA > scoreB) {
+                    fieldAElement.classList.add('winner');
+                } else if (scoreB > scoreA) {
+                    fieldBElement.classList.add('winner');
+                }
+            }
         }
 
         // 重置单个区域
@@ -1651,8 +2049,8 @@
             }
         }
 
-        function resetAll() {
-            if (confirm('确定要重置所有数据吗？\nAre you sure you want to reset all data?')) {
+        function resetAll(silent = false) {
+            if (silent || confirm('确定要重置所有数据吗？\nAre you sure you want to reset all data?')) {
                 // 重置所有数值输入
                 document.querySelectorAll('input[type="number"]').forEach(input => {
                     input.value = 0;
