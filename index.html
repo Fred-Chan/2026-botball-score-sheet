@@ -1640,9 +1640,6 @@
 
         // 场地切换函数
         function switchField(field) {
-            // 保存当前场地数据
-            saveCurrentFieldData();
-
             currentField = field;
 
             // 更新按钮状态
@@ -2028,8 +2025,37 @@
             document.getElementById('externalDockTotal').textContent = externalTotal;
             totalScore += externalTotal;
 
-            // 保存当前场地数据
-            saveCurrentFieldData();
+            // 保存当前场地的输入数据和计算结果
+            const inputData = {};
+
+            // 保存所有数值输入
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                const area = input.dataset.area;
+                const points = input.dataset.points;
+                const key = `${area}_${points}`;
+                inputData[key] = input.value;
+            });
+
+            // 保存所有隐藏输入（乘数）
+            document.querySelectorAll('input[type="hidden"]').forEach(input => {
+                inputData[input.id] = input.value;
+            });
+
+            // 合并保存：输入数据 + 计算结果
+            fieldData[currentField] = {
+                ...inputData,  // 输入数据
+                total: totalScore,  // 总分
+                breakdown: {  // 各区域分数
+                    lower: lowerTotal,
+                    upper: upperTotal,
+                    warehouse: warehouseTotal,
+                    internal: internalTotal,
+                    drum: drumTotal,
+                    packaging: packagingTotal,
+                    upperwarehouse: upperWarehouseTotal,
+                    external: externalTotal
+                }
+            };
 
             // 更新各区域得分明细
             document.getElementById('breakdown-lower').textContent = lowerTotal;
@@ -2042,24 +2068,11 @@
             document.getElementById('breakdown-external').textContent = externalTotal;
 
             // 根据模式更新总分显示
+            const scoreA = (fieldData.A && fieldData.A.total) || 0;
+            const scoreB = (fieldData.B && fieldData.B.total) || 0;
+
             if (currentMode === 'challenge') {
                 // 积分挑战模式：同时显示A、B场地分数和总分
-                fieldData[currentField] = {
-                    total: totalScore,
-                    breakdown: {
-                        lower: lowerTotal,
-                        upper: upperTotal,
-                        warehouse: warehouseTotal,
-                        internal: internalTotal,
-                        drum: drumTotal,
-                        packaging: packagingTotal,
-                        upperwarehouse: upperWarehouseTotal,
-                        external: externalTotal
-                    }
-                };
-
-                const scoreA = (fieldData.A && fieldData.A.total) || 0;
-                const scoreB = (fieldData.B && fieldData.B.total) || 0;
                 const combinedScore = scoreA + scoreB;
 
                 document.getElementById('challengeScoreA').textContent = scoreA;
@@ -2067,23 +2080,6 @@
                 document.getElementById('totalScore').textContent = combinedScore;
             } else {
                 // 巅峰对决模式：显示两个场地的分数并标注胜者
-                fieldData[currentField] = {
-                    total: totalScore,
-                    breakdown: {
-                        lower: lowerTotal,
-                        upper: upperTotal,
-                        warehouse: warehouseTotal,
-                        internal: internalTotal,
-                        drum: drumTotal,
-                        packaging: packagingTotal,
-                        upperwarehouse: upperWarehouseTotal,
-                        external: externalTotal
-                    }
-                };
-
-                const scoreA = (fieldData.A && fieldData.A.total) || 0;
-                const scoreB = (fieldData.B && fieldData.B.total) || 0;
-
                 document.getElementById('duelScoreA').textContent = scoreA;
                 document.getElementById('duelScoreB').textContent = scoreB;
 
