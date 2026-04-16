@@ -810,6 +810,254 @@
             content: " 🏆";
         }
 
+        /* 比赛模式解锁区域 */
+        .competition-unlock {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .competition-unlock h2 {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .unlock-form {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .unlock-form input {
+            padding: 12px 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.95);
+            width: 150px;
+        }
+
+        .unlock-form input:focus {
+            outline: none;
+            border-color: white;
+        }
+
+        .unlock-btn {
+            padding: 12px 24px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .unlock-btn:hover {
+            background: #229954;
+            transform: scale(1.02);
+        }
+
+        .unlock-error {
+            color: #ff6b6b;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .unlock-error.show {
+            display: block;
+        }
+
+        /* 比赛模式表单 */
+        .competition-form {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            display: none;
+        }
+
+        .competition-form.show {
+            display: block;
+        }
+
+        .competition-form h2 {
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            color: white;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 10px 14px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.95);
+            min-width: 120px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: white;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #229954;
+            transform: scale(1.02);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .submit-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        /* 提交成功提示 */
+        .submit-success {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 2000;
+            text-align: center;
+            display: none;
+        }
+
+        .submit-success.show {
+            display: block;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .submit-success h3 {
+            color: #27ae60;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .submit-success p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .submit-success-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .submit-success-btns button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-continue {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-continue:hover {
+            background: #2980b9;
+        }
+
+        .btn-reset {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #c0392b;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+            display: none;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        /* 隐藏随机模块 */
+        .random-module.hidden {
+            display: none;
+        }
+
         /* 不同区域的颜色 */
         .area:nth-child(1) .area-header { background: #3498db; }
         .area:nth-child(2) .area-header { background: #9b59b6; }
@@ -841,6 +1089,35 @@
 <body>
     <div class="container">
         <h1>2026 Botball 计分表</h1>
+
+        <!-- 比赛模式解锁区域 -->
+        <div class="competition-unlock" id="competitionUnlock">
+            <h2>🔐 进入比赛模式 Enter Competition Mode</h2>
+            <div class="unlock-form">
+                <input type="password" id="passwordInput" placeholder="输入密码" onkeypress="if(event.key==='Enter')unlockCompetition()">
+                <button class="unlock-btn" onclick="unlockCompetition()">解锁 Unlock</button>
+            </div>
+            <div class="unlock-error" id="unlockError">密码错误，请重试！Incorrect password!</div>
+        </div>
+
+        <!-- 比赛模式表单 -->
+        <div class="competition-form" id="competitionForm">
+            <h2>📋 比赛信息 Competition Info</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>队伍编号 Team #</label>
+                    <input type="text" id="teamNumber" placeholder="如: 001">
+                </div>
+                <div class="form-group">
+                    <label>赛台编号 Field</label>
+                    <select id="fieldId">
+                        <option value="">请选择 Select</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                    </select>
+                </div>
+            </div>
+        </div>
 
         <!-- 模式选择 -->
         <div class="mode-selector">
@@ -1592,12 +1869,26 @@
         </div>
 
         <button class="reset-btn" onclick="resetAll()">重置所有 Reset All</button>
+        <button class="submit-btn" id="submitBtn" onclick="submitScore()" style="margin-top: 10px; display: none;">📤 提交分数 Submit Score</button>
         <a href="https://www.yuque.com/botball/rules/2026_game_review" target="_blank" class="rules-btn">查看规则 View Rules</a>
 
         <!-- 滚动到底部的悬浮按钮 -->
         <button class="scroll-to-bottom-btn" onclick="scrollToBottom()" title="滚动到底部 Scroll to Bottom">
             ↓
         </button>
+    </div>
+
+    <!-- 遮罩层 -->
+    <div class="overlay" id="overlay" onclick="closeSubmitSuccess()"></div>
+
+    <!-- 提交成功提示 -->
+    <div class="submit-success" id="submitSuccess">
+        <h3>✅ 提交成功！Submitted!</h3>
+        <p>分数已成功提交到服务器<br>The score has been submitted successfully</p>
+        <div class="submit-success-btns">
+            <button class="btn-continue" onclick="continueScoring()">继续计分 Continue</button>
+            <button class="btn-reset" onclick="resetAfterSubmit()">重置计分 Reset</button>
+        </div>
     </div>
 
     <script>
@@ -2168,6 +2459,145 @@
 
         // 初始化计算
         calculate();
+
+        // ========== 比赛模式功能 ==========
+        const COMPETITION_PASSWORD = 'botguy';
+        let isCompetitionMode = false;
+
+        // 密码解锁
+        function unlockCompetition() {
+            const passwordInput = document.getElementById('passwordInput');
+            const password = passwordInput.value.trim().toLowerCase();
+            const errorEl = document.getElementById('unlockError');
+
+            if (password === COMPETITION_PASSWORD) {
+                isCompetitionMode = true;
+                errorEl.classList.remove('show');
+                passwordInput.value = '';
+
+                // 隐藏解锁区域
+                document.getElementById('competitionUnlock').style.display = 'none';
+                // 显示比赛表单
+                document.getElementById('competitionForm').classList.add('show');
+                // 显示提交按钮
+                document.getElementById('submitBtn').style.display = 'block';
+                // 隐藏随机模块（比赛模式不需要）
+                document.querySelector('.random-module').classList.add('hidden');
+
+                // 提示用户
+                alert('已解锁比赛模式！\nCompetition mode unlocked!');
+            } else {
+                errorEl.classList.add('show');
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+
+        // 提交分数
+        async function submitScore() {
+            const teamNumber = document.getElementById('teamNumber').value.trim();
+            const fieldId = document.getElementById('fieldId').value;
+            const submitBtn = document.getElementById('submitBtn');
+
+            // 验证必填字段
+            if (!teamNumber) {
+                alert('请输入队伍编号！\nPlease enter team number!');
+                document.getElementById('teamNumber').focus();
+                return;
+            }
+            if (!fieldId) {
+                alert('请选择赛台编号！\nPlease select field ID!');
+                document.getElementById('fieldId').focus();
+                return;
+            }
+
+            // 禁用按钮防止重复提交
+            submitBtn.disabled = true;
+            submitBtn.textContent = '提交中... Submitting...';
+
+            // 收集数据
+            const scoreA = (fieldData.A && fieldData.A.total) || 0;
+            const scoreB = (fieldData.B && fieldData.B.total) || 0;
+            const totalScore = currentMode === 'challenge' ? scoreA + scoreB : Math.max(scoreA, scoreB);
+
+            // 收集所有输入数据
+            const inputData = {};
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                const area = input.dataset.area;
+                const points = input.dataset.points;
+                const key = `${area}_${points}`;
+                inputData[key] = input.value;
+            });
+            document.querySelectorAll('input[type="hidden"]').forEach(input => {
+                inputData[input.id] = input.value;
+            });
+
+            const submission = {
+                teamNumber: teamNumber,
+                fieldId: fieldId,
+                mode: currentMode,
+                scoreA: scoreA,
+                scoreB: scoreB,
+                totalScore: totalScore,
+                breakdown: fieldData[currentField]?.breakdown || {},
+                timestamp: new Date().toISOString(),
+                inputData: inputData
+            };
+
+            try {
+                const response = await fetch('/api/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(submission)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showSubmitSuccess();
+                } else {
+                    alert('提交失败：' + (result.error || '未知错误'));
+                }
+            } catch (error) {
+                console.error('Submit error:', error);
+                alert('网络错误，请检查连接后重试！\nNetwork error, please try again!');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📤 提交分数 Submit Score';
+            }
+        }
+
+        // 显示提交成功提示
+        function showSubmitSuccess() {
+            document.getElementById('overlay').classList.add('show');
+            document.getElementById('submitSuccess').classList.add('show');
+        }
+
+        // 关闭提交成功提示
+        function closeSubmitSuccess() {
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('submitSuccess').classList.remove('show');
+        }
+
+        // 继续计分
+        function continueScoring() {
+            closeSubmitSuccess();
+            // 清空队伍编号，允许继续计分
+            document.getElementById('teamNumber').value = '';
+            document.getElementById('teamNumber').focus();
+        }
+
+        // 重置计分
+        function resetAfterSubmit() {
+            closeSubmitSuccess();
+            // 重置所有数据
+            resetAll();
+            // 清空表单
+            document.getElementById('teamNumber').value = '';
+            document.getElementById('fieldId').value = '';
+        }
     </script>
 </body>
 </html>
