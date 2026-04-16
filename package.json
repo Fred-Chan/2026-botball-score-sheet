@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "description": "Botball Score Sheet with Competition Mode",
   "scripts": {
-    "dev": "vercel dev",
-    "build": "vercel build"
+    "dev": "vercel dev"
   },
   "dependencies": {
     "@vercel/node": "^3.0.0"
