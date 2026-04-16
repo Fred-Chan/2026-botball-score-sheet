@@ -9,17 +9,6 @@ const LARK_APP_SECRET = process.env.LARK_APP_SECRET;
 const BITABLE_APP_TOKEN = 'LAAObAgWSacPntsxGwdc0XQun7e';
 const TABLE_ID = 'tbl4S19o3FqgayBZ';
 
-// 字段ID映射
-const FIELD_IDS = {
-  teamNumber: 'fldTnvg5VL',
-  fieldId: 'fldzFtEdin',
-  mode: 'fldrbZxJ64',
-  scoreA: 'fldV0BuTVr',
-  scoreB: 'fldqyfM7No',
-  totalScore: 'fldUZH9sSv',
-  timestamp: 'fldLwzMCeR'
-};
-
 let cachedToken = null;
 let tokenExpireTime = 0;
 
@@ -52,9 +41,7 @@ async function getTenantAccessToken() {
 async function createBitableRecord(record) {
   const token = await getTenantAccessToken();
   
-  // DateTime字段需要毫秒时间戳
-  const timestamp = record.timestamp ? new Date(record.timestamp).getTime() : Date.now();
-  
+  // 使用字段名而不是字段ID
   const response = await fetch(
     `https://open.feishu.cn/open-apis/bitable/v1/apps/${BITABLE_APP_TOKEN}/tables/${TABLE_ID}/records`,
     {
@@ -65,13 +52,12 @@ async function createBitableRecord(record) {
       },
       body: JSON.stringify({
         fields: {
-          [FIELD_IDS.teamNumber]: record.teamNumber,
-          [FIELD_IDS.fieldId]: record.fieldId,
-          [FIELD_IDS.mode]: record.mode,
-          [FIELD_IDS.scoreA]: record.scoreA,
-          [FIELD_IDS.scoreB]: record.scoreB,
-          [FIELD_IDS.totalScore]: record.totalScore,
-          [FIELD_IDS.timestamp]: timestamp
+          "队伍编号": record.teamNumber,
+          "赛台": record.fieldId,
+          "比赛模式": record.mode,
+          "A场地分数": record.scoreA,
+          "B场地分数": record.scoreB,
+          "总分": record.totalScore
         }
       })
     }
@@ -120,8 +106,7 @@ export default async function handler(req, res) {
         mode: body.mode || 'challenge',
         scoreA: parseInt(body.scoreA) || 0,
         scoreB: parseInt(body.scoreB) || 0,
-        totalScore: parseInt(body.totalScore) || 0,
-        timestamp: body.timestamp
+        totalScore: parseInt(body.totalScore) || 0
       };
 
       const result = await createBitableRecord(record);
