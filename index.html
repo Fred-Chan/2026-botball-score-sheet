@@ -396,6 +396,140 @@
             transform: scale(0.98);
         }
 
+        .submit-module {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #219150;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .submit-btn:disabled {
+            background: #95a5a6;
+            cursor: wait;
+            transform: none;
+        }
+
+        .submit-status {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        .submit-status.success {
+            display: block;
+            background: #eafaf1;
+            color: #1e8449;
+        }
+
+        .submit-status.error {
+            display: block;
+            background: #fdecea;
+            color: #c0392b;
+        }
+
+        .submit-status.info {
+            display: block;
+            background: #eaf4fb;
+            color: #2471a3;
+        }
+
+        /* 规则图示折叠模块 */
+        .rules-illustration {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .rules-illustration summary {
+            padding: 20px;
+            cursor: pointer;
+            user-select: none;
+            background: #f8f9fa;
+            transition: background 0.2s;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .rules-illustration summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .rules-illustration summary:hover {
+            background: #e9ecef;
+        }
+
+        .rules-illustration summary::after {
+            content: "▼";
+            font-size: 0.9rem;
+            transition: transform 0.3s;
+        }
+
+        .rules-illustration[open] summary::after {
+            transform: rotate(-180deg);
+        }
+
+        .rules-illustration-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .illustration-image {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .illustration-placeholder {
+            width: 100%;
+            min-height: 200px;
+            background: #f8f9fa;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 0.9rem;
+            padding: 20px;
+            text-align: center;
+        }
+
         /* 道具随机模块 */
         .random-module {
             background: white;
@@ -850,6 +984,32 @@
                 <button class="mode-btn" onclick="switchMode('duel')">巅峰对决<br><small>Double Elimination</small></button>
             </div>
         </div>
+
+        <!-- 规则图示折叠模块 -->
+        <details class="rules-illustration">
+            <summary>
+                <span>规则图示 Rules Illustration</span>
+            </summary>
+            <div class="rules-illustration-content">
+                <!-- 图示1 - 替换src属性为实际图片路径 -->
+                <div>
+                    <img src="" alt="规则图示 1" class="illustration-image" style="display:none;" id="illustration1">
+                    <div class="illustration-placeholder" id="placeholder1">
+                        图片占位符 1<br>
+                        <small>请编辑HTML，将img标签的src属性设置为图片路径</small>
+                    </div>
+                </div>
+
+                <!-- 图示2 - 替换src属性为实际图片路径 -->
+                <div>
+                    <img src="" alt="规则图示 2" class="illustration-image" style="display:none;" id="illustration2">
+                    <div class="illustration-placeholder" id="placeholder2">
+                        图片占位符 2<br>
+                        <small>请编辑HTML，将img标签的src属性设置为图片路径</small>
+                    </div>
+                </div>
+            </div>
+        </details>
 
         <!-- 道具随机模块 -->
         <div class="random-module">
@@ -1591,11 +1751,16 @@
             </div>
         </div>
 
-        <button class="reset-btn" onclick="resetAll()">重置所有 Reset All</button>
-        <a href="https://www.yuque.com/botball/rules/2026_game_review" target="_blank" class="rules-btn">查看规则 View Rules</a>
+        <div class="submit-module" data-html2canvas-ignore="true">
+            <button class="submit-btn" id="submitScoreBtn" onclick="submitScore()">提交到飞书 Submit to Feishu</button>
+            <div class="submit-status" id="submitStatus"></div>
+        </div>
+
+        <button class="reset-btn" onclick="resetAll()" data-html2canvas-ignore="true">重置所有 Reset All</button>
+        <a href="https://www.yuque.com/botball/rules/2026_game_review" target="_blank" class="rules-btn" data-html2canvas-ignore="true">查看规则 View Rules</a>
 
         <!-- 滚动到底部的悬浮按钮 -->
-        <button class="scroll-to-bottom-btn" onclick="scrollToBottom()" title="滚动到底部 Scroll to Bottom">
+        <button class="scroll-to-bottom-btn" onclick="scrollToBottom()" title="滚动到底部 Scroll to Bottom" data-html2canvas-ignore="true">
             ↓
         </button>
     </div>
@@ -2166,8 +2331,141 @@
             });
         }
 
-        // 初始化计算
+        function getVisibleTotalScore() {
+            if (currentMode === 'challenge') {
+                return parseInt(document.getElementById('totalScore').textContent, 10) || 0;
+            }
+
+            const scoreA = (fieldData.A && fieldData.A.total) || 0;
+            const scoreB = (fieldData.B && fieldData.B.total) || 0;
+            return Math.max(scoreA, scoreB);
+        }
+
+        function getScoreSnapshot() {
+            calculate();
+
+            const scoreA = (fieldData.A && fieldData.A.total) || 0;
+            const scoreB = (fieldData.B && fieldData.B.total) || 0;
+
+            return {
+                submittedAt: new Date().toISOString(),
+                mode: currentMode,
+                currentField,
+                totalScore: getVisibleTotalScore(),
+                scoreA,
+                scoreB,
+                fieldData
+            };
+        }
+
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const existingScript = document.querySelector(`script[src="${src}"]`);
+                if (existingScript) {
+                    existingScript.addEventListener('load', resolve, { once: true });
+                    existingScript.addEventListener('error', reject, { once: true });
+                    if (window.html2canvas) {
+                        resolve();
+                    }
+                    return;
+                }
+
+                const script = document.createElement('script');
+                script.src = src;
+                script.async = true;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        async function captureScoreScreenshot() {
+            await loadScript('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js');
+
+            const canvas = await html2canvas(document.querySelector('.total-score'), {
+                backgroundColor: '#f5f5f5',
+                scale: Math.min(window.devicePixelRatio || 1, 2),
+                useCORS: true,
+                windowWidth: document.documentElement.scrollWidth,
+                windowHeight: document.documentElement.scrollHeight
+            });
+
+            return canvas.toDataURL('image/png');
+        }
+
+        function setSubmitStatus(type, message) {
+            const status = document.getElementById('submitStatus');
+            status.className = `submit-status ${type}`;
+            status.textContent = message;
+        }
+
+        async function submitScore() {
+            const submitButton = document.getElementById('submitScoreBtn');
+            submitButton.disabled = true;
+            submitButton.textContent = '提交中... Submitting...';
+            setSubmitStatus('info', '正在生成当前页面截图...');
+
+            try {
+                const payload = getScoreSnapshot();
+                payload.screenshot = await captureScoreScreenshot();
+
+                setSubmitStatus('info', '正在提交到飞书数据表...');
+
+                const response = await fetch('/api/submit-score', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    throw new Error(result.error || '提交失败，请稍后重试');
+                }
+
+                setSubmitStatus('success', '已提交到飞书数据表，并附上当前分数页面截图。');
+            } catch (error) {
+                setSubmitStatus('error', error.message || '提交失败，请检查网络或飞书配置。');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = '提交到飞书 Submit to Feishu';
+            }
+        }
+
+        // 检查并显示规则图示图片
+        function initializeIllustrationImages() {
+            // 处理图示1
+            const img1 = document.getElementById('illustration1');
+            const placeholder1 = document.getElementById('placeholder1');
+            if (img1.src && img1.src !== '' && !img1.src.endsWith('/')) {
+                img1.style.display = 'block';
+                placeholder1.style.display = 'none';
+                // 处理图片加载错误
+                img1.onerror = function() {
+                    img1.style.display = 'none';
+                    placeholder1.style.display = 'flex';
+                };
+            }
+
+            // 处理图示2
+            const img2 = document.getElementById('illustration2');
+            const placeholder2 = document.getElementById('placeholder2');
+            if (img2.src && img2.src !== '' && !img2.src.endsWith('/')) {
+                img2.style.display = 'block';
+                placeholder2.style.display = 'none';
+                // 处理图片加载错误
+                img2.onerror = function() {
+                    img2.style.display = 'none';
+                    placeholder2.style.display = 'flex';
+                };
+            }
+        }
+
+        // 初始化
         calculate();
+        initializeIllustrationImages();
     </script>
 </body>
 </html>
