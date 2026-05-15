@@ -16,3 +16,4 @@ npm-debug.log*
 # Temporary files
 *.tmp
 *.temp
+.env*.local
