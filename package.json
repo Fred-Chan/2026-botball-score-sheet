@@ -1,0 +1,24 @@
+{
+  "name": "2026_botball_score_sheet",
+  "version": "1.0.0",
+  "description": "Static score sheet with a Vercel Serverless endpoint for submitting score records and screenshots to Feishu Base.",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fred-Chan/2026-botball-score-sheet.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Fred-Chan/2026-botball-score-sheet/issues"
+  },
+  "homepage": "https://github.com/Fred-Chan/2026-botball-score-sheet#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.60.0"
+  }
+}

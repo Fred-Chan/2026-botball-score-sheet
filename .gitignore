@@ -13,6 +13,13 @@
 *.log
 npm-debug.log*
 
+# Node
+node_modules/
+
+# Playwright
+test-results/
+playwright-report/
+
 # Temporary files
 *.tmp
 *.temp

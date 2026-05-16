@@ -1,0 +1,39 @@
+const { test, expect } = require('@playwright/test');
+const path = require('path');
+const { pathToFileURL } = require('url');
+
+const pageUrl = pathToFileURL(path.join(__dirname, '..', 'index.html')).href;
+
+test.describe('ADDS random module', () => {
+    test('randomizes eight circular markers with four pink and four blue markers', async ({ page }) => {
+        await page.setViewportSize({ width: 390, height: 900 });
+        await page.goto(pageUrl);
+
+        await page.getByRole('button', { name: /随机排列 Randomize/ }).click();
+
+        const markers = page.locator('#addsRandomMarkers .adds-marker');
+        await expect(markers).toHaveCount(8);
+        await expect(page.locator('#addsRandomMarkers .adds-marker.pink')).toHaveCount(4);
+        await expect(page.locator('#addsRandomMarkers .adds-marker.blue')).toHaveCount(4);
+
+        const layout = await page.evaluate(() => {
+            const row = document.getElementById('addsRandomMarkers');
+            const rowRect = row.getBoundingClientRect();
+            const markerRects = Array.from(row.querySelectorAll('.adds-marker')).map(marker => marker.getBoundingClientRect());
+
+            return {
+                isSingleLine: new Set(markerRects.map(rect => Math.round(rect.top))).size === 1,
+                hasCircles: markerRects.every(rect => Math.abs(rect.width - rect.height) <= 1),
+                fitsViewport: document.documentElement.scrollWidth <= window.innerWidth,
+                containedInRow: markerRects.every(rect => rect.left >= rowRect.left && rect.right <= rowRect.right)
+            };
+        });
+
+        expect(layout).toEqual({
+            isSingleLine: true,
+            hasCircles: true,
+            fitsViewport: true,
+            containedInRow: true
+        });
+    });
+});

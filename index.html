@@ -622,6 +622,50 @@
             transform: scale(0.98);
         }
 
+        /* ADDS随机模块 */
+        .adds-random-module {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .adds-random-module h2 {
+            text-align: center;
+            color: #333;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .adds-marker-row {
+            display: grid;
+            grid-template-columns: repeat(8, minmax(28px, 1fr));
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .adds-marker {
+            width: 100%;
+            max-width: 54px;
+            aspect-ratio: 1;
+            justify-self: center;
+            border-radius: 50%;
+            border: 3px solid #2c3e50;
+            background: #ecf0f1;
+            box-shadow: inset 0 2px 5px rgba(255,255,255,0.6), 0 2px 5px rgba(0,0,0,0.16);
+        }
+
+        .adds-marker.pink {
+            background: #ff6fb1;
+            border-color: #d83d83;
+        }
+
+        .adds-marker.blue {
+            background: #3498db;
+            border-color: #2471a3;
+        }
+
         /* 计时器模块 */
         .timer-module {
             background: white;
@@ -955,6 +999,18 @@
         .area:nth-child(8) .area-header { background: #d35400; }
 
         @media (max-width: 480px) {
+            .random-items {
+                grid-template-columns: 1fr;
+            }
+
+            .adds-marker-row {
+                gap: 5px;
+            }
+
+            .adds-marker {
+                border-width: 2px;
+            }
+
             .score-item {
                 flex-direction: column;
                 align-items: flex-start;
@@ -1045,6 +1101,22 @@
                 </div>
             </div>
             <button class="random-btn" onclick="generateRandom()">随机生成 Randomize</button>
+        </div>
+
+        <!-- ADDS随机模块 -->
+        <div class="adds-random-module">
+            <h2>ADDS随机 ADDS Random</h2>
+            <div class="adds-marker-row" id="addsRandomMarkers" aria-label="ADDS随机标记排列">
+                <div class="adds-marker"></div>
+                <div class="adds-marker"></div>
+                <div class="adds-marker"></div>
+                <div class="adds-marker"></div>
+                <div class="adds-marker"></div>
+                <div class="adds-marker"></div>
+                <div class="adds-marker"></div>
+                <div class="adds-marker"></div>
+            </div>
+            <button class="random-btn" onclick="generateAddsRandom()">随机排列 Randomize</button>
         </div>
 
         <!-- 计时器模块 -->
@@ -1932,6 +2004,20 @@
             const cubeStack2 = document.getElementById('cubeStack2Random');
             cubeStack2.innerHTML = stack2.map(color =>
                 `<div class="color-box ${color}">${colorNames[color]}</div>`
+            ).join('');
+        }
+
+        function generateAddsRandom() {
+            const colors = ['pink', 'pink', 'pink', 'pink', 'blue', 'blue', 'blue', 'blue'];
+
+            for (let i = colors.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [colors[i], colors[j]] = [colors[j], colors[i]];
+            }
+
+            const addsMarkers = document.getElementById('addsRandomMarkers');
+            addsMarkers.innerHTML = colors.map((color, index) =>
+                `<div class="adds-marker ${color}" title="${index + 1}: ${color === 'pink' ? '粉' : '蓝'}"></div>`
             ).join('');
         }
 
