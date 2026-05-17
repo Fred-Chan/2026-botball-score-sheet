@@ -2101,10 +2101,44 @@
         let isRunning = false;
         let currentLight = 0;
         let phase = 'initial'; // 'initial' or 'lights'
+        let audioContext = null;
+
+        function initializeTimerAudio() {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return;
+
+            if (!audioContext) {
+                audioContext = new AudioContext();
+            }
+
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }
+
+        function playTimerBeep() {
+            if (!audioContext) return;
+
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            const startTime = audioContext.currentTime;
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(880, startTime);
+            gainNode.gain.setValueAtTime(0.001, startTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.28, startTime + 0.015);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 0.22);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            oscillator.start(startTime);
+            oscillator.stop(startTime + 0.24);
+        }
 
         function startTimer() {
             if (isRunning) return;
 
+            initializeTimerAudio();
             isRunning = true;
             document.getElementById('startBtn').disabled = true;
 
@@ -2117,6 +2151,7 @@
                         phase = 'lights';
                         currentLight = 1;
                         document.getElementById('light1').classList.add('on');
+                        playTimerBeep();
                     }
                     document.getElementById('timerDisplay').textContent = currentTime.toFixed(1);
                 } else {
@@ -2127,6 +2162,7 @@
                         currentLight++;
                         if (currentLight <= 8) {
                             document.getElementById('light' + currentLight).classList.add('on');
+                            playTimerBeep();
                         }
                         if (currentLight >= 8) {
                             // 所有灯都亮了，停止计时

@@ -70,3 +70,27 @@ test.describe('mobile interactions', () => {
         expect(touchAction).toBe('manipulation');
     });
 });
+
+test.describe('ADDS timer', () => {
+    test('plays a prompt sound every time the countdown reaches zero', async ({ page }) => {
+        await page.clock.install();
+        await page.goto(pageUrl);
+
+        await page.evaluate(() => {
+            window.timerBeepCount = 0;
+            window.playTimerBeep = () => {
+                window.timerBeepCount++;
+            };
+        });
+
+        await page.getByRole('button', { name: /开始 Start/ }).click();
+
+        await page.clock.runFor(10000);
+        await expect(page.locator('#light1')).toHaveClass(/on/);
+        await expect.poll(() => page.evaluate(() => window.timerBeepCount)).toBe(1);
+
+        await page.clock.runFor(7000);
+        await expect(page.locator('#light2')).toHaveClass(/on/);
+        await expect.poll(() => page.evaluate(() => window.timerBeepCount)).toBe(2);
+    });
+});
