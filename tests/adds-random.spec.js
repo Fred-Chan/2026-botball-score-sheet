@@ -55,3 +55,18 @@ test.describe('field selector', () => {
         await expect(page.locator('#scoreFieldBanner')).toContainText('Field B');
     });
 });
+
+test.describe('mobile interactions', () => {
+    test('disables double-tap page zoom on touch devices', async ({ page }) => {
+        await page.setViewportSize({ width: 390, height: 900 });
+        await page.goto(pageUrl);
+
+        await expect(page.locator('meta[name="viewport"]')).toHaveAttribute(
+            'content',
+            /maximum-scale=1\.0, user-scalable=no/
+        );
+
+        const touchAction = await page.evaluate(() => getComputedStyle(document.body).touchAction);
+        expect(touchAction).toBe('manipulation');
+    });
+});
