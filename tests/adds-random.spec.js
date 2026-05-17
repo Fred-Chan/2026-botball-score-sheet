@@ -37,3 +37,21 @@ test.describe('ADDS random module', () => {
         });
     });
 });
+
+test.describe('field selector', () => {
+    test('shows field controls after ADDS timer and clearly labels the active scoring field', async ({ page }) => {
+        await page.setViewportSize({ width: 390, height: 900 });
+        await page.goto(pageUrl);
+
+        const topFieldSelector = page.locator('.timer-module + .field-selector');
+        await expect(topFieldSelector.getByRole('button', { name: /A场地/ })).toHaveClass(/active/);
+        await expect(page.locator('#scoreFieldBanner')).toContainText('A场地');
+
+        await topFieldSelector.getByRole('button', { name: /B场地/ }).click();
+
+        await expect(topFieldSelector.getByRole('button', { name: /B场地/ })).toHaveClass(/active/);
+        await expect(page.locator('.field-selector-inline').getByRole('button', { name: /B场地/ })).toHaveClass(/active/);
+        await expect(page.locator('#scoreFieldBanner')).toContainText('B场地');
+        await expect(page.locator('#scoreFieldBanner')).toContainText('Field B');
+    });
+});

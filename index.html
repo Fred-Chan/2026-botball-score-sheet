@@ -888,6 +888,40 @@
             text-align: center;
         }
 
+        .current-field-banner {
+            background: white;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-left: 8px solid #27ae60;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .current-field-banner .label {
+            color: #555;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .current-field-banner .field-name {
+            color: #27ae60;
+            font-size: 1.35rem;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .current-field-banner small {
+            display: block;
+            color: #777;
+            font-size: 0.75rem;
+            font-weight: normal;
+            margin-top: 2px;
+        }
+
         /* 总分组合显示 */
         .total-combined {
             margin-top: 15px;
@@ -1009,6 +1043,15 @@
 
             .adds-marker {
                 border-width: 2px;
+            }
+
+            .current-field-banner {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .current-field-banner .field-name {
+                text-align: left;
             }
 
             .score-item {
@@ -1136,6 +1179,23 @@
             <div class="timer-controls">
                 <button class="timer-btn start" id="startBtn" onclick="startTimer()">开始 Start</button>
                 <button class="timer-btn reset" onclick="resetTimer()">重置 Reset</button>
+            </div>
+        </div>
+
+        <!-- 场地选择器 -->
+        <div class="field-selector" data-html2canvas-ignore="true">
+            <h3>当前编辑场地 Current Field</h3>
+            <div class="field-buttons">
+                <button class="field-btn active" data-field="A" onclick="switchField('A')">A场地<br><small>Field A</small></button>
+                <button class="field-btn" data-field="B" onclick="switchField('B')">B场地<br><small>Field B</small></button>
+            </div>
+        </div>
+
+        <div class="current-field-banner" id="scoreFieldBanner">
+            <div class="label">当前计分场地<br><small>Scoring now</small></div>
+            <div class="field-name">
+                <span data-current-field-label>A场地</span>
+                <small data-current-field-en>Field A</small>
             </div>
         </div>
 
@@ -1747,8 +1807,8 @@
             <div class="field-selector-inline">
                 <h3>当前编辑场地 Current Field</h3>
                 <div class="field-buttons">
-                    <button class="field-btn active" onclick="switchField('A')">A场地<br><small>Field A</small></button>
-                    <button class="field-btn" onclick="switchField('B')">B场地<br><small>Field B</small></button>
+                    <button class="field-btn active" data-field="A" onclick="switchField('A')">A场地<br><small>Field A</small></button>
+                    <button class="field-btn" data-field="B" onclick="switchField('B')">B场地<br><small>Field B</small></button>
                 </div>
             </div>
 
@@ -1879,16 +1939,29 @@
         function switchField(field) {
             currentField = field;
 
-            // 更新按钮状态
-            document.querySelectorAll('.field-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.closest('.field-btn').classList.add('active');
+            updateCurrentFieldDisplay();
 
             // 加载新场地数据
             loadFieldData(field);
 
             calculate();
+        }
+
+        function updateCurrentFieldDisplay() {
+            const fieldLabel = currentField === 'A' ? 'A场地' : 'B场地';
+            const fieldLabelEn = currentField === 'A' ? 'Field A' : 'Field B';
+
+            document.querySelectorAll('.field-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.field === currentField);
+            });
+
+            document.querySelectorAll('[data-current-field-label]').forEach(label => {
+                label.textContent = fieldLabel;
+            });
+
+            document.querySelectorAll('[data-current-field-en]').forEach(label => {
+                label.textContent = fieldLabelEn;
+            });
         }
 
         // 保存当前场地数据
@@ -2550,6 +2623,7 @@
         }
 
         // 初始化
+        updateCurrentFieldDisplay();
         calculate();
         initializeIllustrationImages();
     </script>
