@@ -2119,20 +2119,27 @@
         function playTimerBeep() {
             if (!audioContext) return;
 
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
             const startTime = audioContext.currentTime;
+            const beepCount = 3;
+            const beepInterval = 0.18;
+            const beepDuration = 0.11;
 
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(880, startTime);
-            gainNode.gain.setValueAtTime(0.001, startTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.28, startTime + 0.015);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 0.22);
+            for (let i = 0; i < beepCount; i++) {
+                const beepStart = startTime + (i * beepInterval);
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
 
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            oscillator.start(startTime);
-            oscillator.stop(startTime + 0.24);
+                oscillator.type = 'square';
+                oscillator.frequency.setValueAtTime(1760, beepStart);
+                gainNode.gain.setValueAtTime(0.001, beepStart);
+                gainNode.gain.exponentialRampToValueAtTime(0.55, beepStart + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, beepStart + beepDuration);
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.start(beepStart);
+                oscillator.stop(beepStart + beepDuration + 0.02);
+            }
         }
 
         function startTimer() {
